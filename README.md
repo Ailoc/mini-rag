@@ -56,5 +56,21 @@ semantic_splitting = SemanticChunker(
 
 > 这种分割方式主要的问题是不同的文档语义相似度具有明显的差别，这有可能导致不同的文档划分出的chunk数量显著不同，甚至有可能将整个文档划分到一个chunk中。
 
-# Agentic chunking
+# *Agentic chunking*
 利用大语言模型分析文档内容并进行分块，但是这种方式成本高昂，而且会受到上下文窗口的限制。
+
+# *Document-Specific Chunking*
+利用文档结构进行内容分块，主要使用unstructured库进行实现。流程如下：
+
+      原始文档 -> unstructured -> 按照文章结构进行分块                       
+                   _____________________|__________________     
+                   |                    |                  |
+                  text             text/table           text/image
+                   |                    |__________________|
+                   |                               |
+                   |                      将内容交给llm进行总结
+                   |_______________________________|_______|
+                                        |
+                          将各个分块内容填充到langchain document中
+                                        |
+                                向量化并存入数据库
