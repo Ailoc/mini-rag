@@ -74,3 +74,44 @@ semantic_splitting = SemanticChunker(
                           将各个分块内容填充到langchain document中
                                         |
                                 向量化并存入数据库
+
+# 文档检索方案
+1. 检索前k个相似的文档，这种情况下不管检索的内容是否在文档中存在都会返回结果
+```python
+retrieval = db.as_retriever(search_kwargs={"k": 5})
+```
+2. 设置相似度阈值，只返回高于阈值的文档内容
+```python
+retrieval = db.as_retriever(
+    search_type="similarity_score_threshold",
+    search_kwargs={"k": 3, "score_threshold": 0.3},
+)
+```
+3. 最大边际相关性的方法mmr(maximum marginal relevance)
+```python
+retrieval = db.as_retriever(
+    search_type="mmr",
+    search_kwargs={
+        "k": 3, 
+        "fetch_k": 10,
+        "lambda_mult": 0.5},   # 相似性和多样性的中间点
+)
+```
+MMR方法大体可以分为两个阶段：
+1. 找出和查询内容相近的块chunk
+2. 从这些chunks中找出多样化的内容块
+
+什么时候该用MMR？
+1. 文档内容有重叠的表述
+2. 希望检索出的内容涵盖多个方面时
+
+什么时候不需要MMR？
+1. 文档内容已经足够多样化时
+2. 对检索速度要求比较高的情况下，因为MMR可能比较耗时
+
+# 基于多查询的RAG方法
+通过根据用户的查询内容，利用大模型进一步生成多个相关的查询语句，从而尽可能全面地找出相关的文档内容。
+## RRF（Reciprocal Rank Fusion）
+RRF（Reciprocal Rank Fusion）是一种基于多个检索结果的融合方法，它通过计算每个检索结果的倒数排名（reciprocal rank）来评估其质量，并将这些分数进行加权平均，以得到最终的融合结果。这种方法可以有效地减少单一检索结果的偏差，提高检索结果的准确性和可靠性。
+
+# Hybrid Search
