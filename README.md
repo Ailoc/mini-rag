@@ -114,4 +114,17 @@ MMR方法大体可以分为两个阶段：
 ## RRF（Reciprocal Rank Fusion）
 RRF（Reciprocal Rank Fusion）是一种基于多个检索结果的融合方法，它通过计算每个检索结果的倒数排名（reciprocal rank）来评估其质量，并将这些分数进行加权平均，以得到最终的融合结果。这种方法可以有效地减少单一检索结果的偏差，提高检索结果的准确性和可靠性。
 
-# Hybrid Search
+# Hybrid Retriever
+混合检索结合了向量检索和关键词检索两种方法，可以有效地提高检索结果的准确性和多样性，向量检索的结果在语义上和查询内容相近，但是内容上可能不够全面，而关键词检索的结果在内容上和查询内容相近，但是语义上可能不够准确。因此，混合检索可以有效地平衡语义和内容的匹配度，提高检索结果的准确性和多样性。
+```python
+from langchain_classic.retrievers import EnsembleRetriever, BM25Retriever
+hybrid_retriever = EnsembleRetriever(
+    retrievers=[retrieval, bm25_retriever],
+    weights=[0.5, 0.5]
+)
+hybrid_result = hybrid_retriever.invoke(query)
+```
+> https://zilliz.com.cn/blog/mastering-bm25-a-deep-dive-into-the-algorithm-and-application-in-milvu
+# Reranker
+Reranker是一种基于大模型的检索结果重排序方法，它通过利用大模型的生成能力，生成多个相关的查询语句，从而尽可能全面地找出相关的文档内容。它相比于LLM，成本更低，效果也比传统的向量查询或者关键词查询效果更好，实现了更加深度的语义匹配。
+> https://zilliz.com.cn/blog/rag-reranker-therole-and-tradeoffs
