@@ -126,5 +126,5 @@ hybrid_result = hybrid_retriever.invoke(query)
 ```
 > https://zilliz.com.cn/blog/mastering-bm25-a-deep-dive-into-the-algorithm-and-application-in-milvu
 # Reranker
-Reranker是一种基于大模型的检索结果重排序方法，它通过利用大模型的生成能力，生成多个相关的查询语句，从而尽可能全面地找出相关的文档内容。它相比于LLM，成本更低，效果也比传统的向量查询或者关键词查询效果更好，实现了更加深度的语义匹配。
+Reranker是一种基于大模型的检索结果重排序方法，它通过利cross-encoder，从而尽可能深入地找出相关的文档内容。它相比于LLM，成本更低，效果也比传统的向量查询或者关键词查询效果更好，实现了更加深度的语义匹配。
 > https://zilliz.com.cn/blog/rag-reranker-therole-and-tradeoffs
